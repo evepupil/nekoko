@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Eye, EyeOff, Copy, Check, Key } from 'lucide-react';
+import { Plus, Trash2, Eye, EyeOff, Copy, Check } from 'lucide-react';
 import type { ApiKey, User } from '@/lib/types';
 
 interface ApiKeyWithUser extends ApiKey {
@@ -106,28 +106,18 @@ export default function ApiKeysPage() {
   };
 
   if (loading) {
-    return (
-      <div className="max-w-6xl">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-48 mb-8"></div>
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
-            <div className="h-64 bg-gray-100 rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="text-gray-500">加载中...</div>;
   }
 
   return (
-    <div className="max-w-6xl">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">API Key 管理</h1>
-          <p className="text-gray-600">管理用户的 API 访问密钥</p>
-        </div>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          API Key 管理
+        </h1>
         <button
           onClick={openModal}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           disabled={users.length === 0}
         >
           <Plus size={20} />
@@ -136,119 +126,101 @@ export default function ApiKeysPage() {
       </div>
 
       {users.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6">
-          <p className="text-amber-800">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+          <p className="text-yellow-800 dark:text-yellow-300">
             请先在「用户管理」中添加用户，才能创建 API Key。
           </p>
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <table className="w-full">
-          <thead className="bg-slate-50 border-b border-gray-200">
+          <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 名称
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 用户
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 API Key
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 调用次数
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 状态
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 创建时间
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {apiKeys.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-16 text-center">
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center mb-4">
-                      <Key size={32} className="text-indigo-500" />
-                    </div>
-                    <p className="text-gray-500 mb-4">暂无 API Key</p>
-                    {users.length > 0 && (
-                      <button
-                        onClick={openModal}
-                        className="text-violet-600 hover:text-violet-700 font-medium"
-                      >
-                        创建第一个 API Key
-                      </button>
-                    )}
-                  </div>
+                <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  暂无 API Key
                 </td>
               </tr>
             ) : (
               apiKeys.map((key) => (
-                <tr key={key.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center">
-                        <Key size={20} className="text-white" />
-                      </div>
-                      <span className="font-medium text-gray-900">{key.name}</span>
-                    </div>
+                <tr key={key.id}>
+                  <td className="px-6 py-4 text-gray-900 dark:text-white">
+                    {key.name}
                   </td>
-                  <td className="px-6 py-4 text-gray-600">
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
                     {key.username}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <code className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded font-mono">
+                      <code className="text-sm text-gray-600 dark:text-gray-400 font-mono">
                         {showKeys[key.id] ? key.key : maskApiKey(key.key)}
                       </code>
                       <button
                         onClick={() => toggleKeyVisibility(key.id)}
-                        className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        className="text-gray-400 hover:text-gray-600"
                       >
                         {showKeys[key.id] ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                       <button
                         onClick={() => copyToClipboard(key.key, key.id)}
-                        className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        className="text-gray-400 hover:text-gray-600"
                       >
                         {copiedKey === key.id ? (
-                          <Check size={16} className="text-emerald-500" />
+                          <Check size={16} className="text-green-500" />
                         ) : (
                           <Copy size={16} />
                         )}
                       </button>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="font-medium text-gray-900">{key.usageCount}</span>
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
+                    {key.usageCount}
                   </td>
                   <td className="px-6 py-4">
                     <button
                       onClick={() => handleToggleStatus(key)}
-                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                      className={`px-2 py-1 text-xs rounded-full ${
                         key.status === 'active'
-                          ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                          : 'bg-red-100 text-red-700 hover:bg-red-200'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                       }`}
                     >
                       {key.status === 'active' ? '启用' : '禁用'}
                     </button>
                   </td>
-                  <td className="px-6 py-4 text-gray-600 text-sm">
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">
                     {new Date(key.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">
                     <button
                       onClick={() => handleDelete(key.id)}
-                      className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -262,21 +234,22 @@ export default function ApiKeysPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 m-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               创建 API Key
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   用户
                 </label>
                 <select
                   value={form.userId}
                   onChange={(e) => setForm({ ...form, userId: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all bg-white text-gray-900"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 >
                   <option value="">选择用户</option>
@@ -289,14 +262,15 @@ export default function ApiKeysPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   名称
                 </label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all bg-white text-gray-900"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="如: 生产环境、测试用"
                   required
                 />
@@ -306,13 +280,13 @@ export default function ApiKeysPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   取消
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:opacity-90 transition-opacity"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
                   创建
                 </button>

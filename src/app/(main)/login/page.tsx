@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '@/components/AuthProvider';
 
-export default function AdminLoginPage() {
+export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,33 +18,23 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+    const result = await login(username, password);
 
-      const data = await res.json();
-
-      if (res.ok) {
-        router.push('/admin');
-        router.refresh();
-      } else {
-        setError(data.error || '登录失败');
-      }
-    } catch {
-      setError('网络错误，请重试');
-    } finally {
-      setLoading(false);
+    if (result.success) {
+      router.push('/');
+      router.refresh();
+    } else {
+      setError(result.error || '登录失败');
     }
+
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8">
-          管理后台登录
+          登录
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -94,7 +87,10 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          默认账号: admin / admin123
+          还没有账号？{' '}
+          <Link href="/register" className="text-blue-600 hover:underline">
+            立即注册
+          </Link>
         </p>
       </div>
     </div>

@@ -16,7 +16,6 @@
     "next": "16.0.8",
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "tailwind-merge": "^3.4.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

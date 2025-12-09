@@ -21,9 +21,11 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <AdminSidebar username={payload.username} />
-      <main className="ml-60 p-8">{children}</main>
+      <div className="lg:pl-64">
+        <main className="p-6">{children}</main>
+      </div>
     </div>
   );
 }
