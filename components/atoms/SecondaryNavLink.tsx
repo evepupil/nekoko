@@ -1,11 +1,12 @@
 import React from 'react';
+import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SecondaryNavLinkProps {
   icon: LucideIcon;
   label: string;
-  onClick?: () => void;
+  href: string;
 }
 
 /**
@@ -16,11 +17,11 @@ interface SecondaryNavLinkProps {
 export const SecondaryNavLink: React.FC<SecondaryNavLinkProps> = ({
   icon: Icon,
   label,
-  onClick,
+  href,
 }) => {
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href={href}
       className={cn(
         // 基础样式
         'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg',
@@ -32,6 +33,6 @@ export const SecondaryNavLink: React.FC<SecondaryNavLinkProps> = ({
     >
       <Icon className="w-4 h-4" />
       <span>{label}</span>
-    </button>
+    </Link>
   );
 };

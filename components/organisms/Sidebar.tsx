@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { usePathname } from 'next/navigation';
 import { Home, Image, Sparkles, CreditCard, Zap, Key, Settings, Twitter, Github, Linkedin } from 'lucide-react';
 import { NavLink } from '@/components/atoms/NavLink';
 import { SecondaryNavLink } from '@/components/atoms/SecondaryNavLink';
@@ -11,10 +12,10 @@ import { UserProfile } from '@/components/molecules/UserProfile';
  * 组织组件 - 侧边栏
  * 包含品牌logo、导航链接、专用链接、社交图标和用户资料
  * 优化后的精致版本，增加间距和视觉层次
- * Nekoko AI 图片生成平台版本
+ * Nekoko AI 图片生成平台版本 - 支持真实路由导航
  */
 export const Sidebar: React.FC = () => {
-  const [activeNav, setActiveNav] = useState('home');
+  const pathname = usePathname();
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-60 bg-slate-50 border-r border-gray-100 flex flex-col">
@@ -35,20 +36,20 @@ export const Sidebar: React.FC = () => {
         <NavLink
           icon={Home}
           label="Home"
-          active={activeNav === 'home'}
-          onClick={() => setActiveNav('home')}
+          href="/"
+          active={pathname === '/'}
         />
         <NavLink
           icon={Image}
           label="Gallery"
-          active={activeNav === 'gallery'}
-          onClick={() => setActiveNav('gallery')}
+          href="/gallery"
+          active={pathname === '/gallery'}
         />
         <NavLink
           icon={Sparkles}
           label="Create"
-          active={activeNav === 'create'}
-          onClick={() => setActiveNav('create')}
+          href="/create"
+          active={pathname === '/create'}
         />
       </nav>
 
@@ -56,10 +57,10 @@ export const Sidebar: React.FC = () => {
       <div className="px-4 pb-6 space-y-5">
         {/* 专用链接 - 使用更小的图标和文字 */}
         <div className="space-y-0.5">
-          <SecondaryNavLink icon={CreditCard} label="Pricing" />
-          <SecondaryNavLink icon={Zap} label="Credits" />
-          <SecondaryNavLink icon={Key} label="API" />
-          <SecondaryNavLink icon={Settings} label="Settings" />
+          <SecondaryNavLink icon={CreditCard} label="Pricing" href="/pricing" />
+          <SecondaryNavLink icon={Zap} label="Credits" href="/credits" />
+          <SecondaryNavLink icon={Key} label="API" href="/api" />
+          <SecondaryNavLink icon={Settings} label="Settings" href="/settings" />
         </div>
 
         {/* 分隔线 */}

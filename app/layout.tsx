@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Sidebar } from "@/components/organisms/Sidebar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,7 +23,15 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased`}
       >
-        {children}
+        <div className="flex min-h-screen bg-white">
+          {/* 左侧边栏 - 所有页面共享 */}
+          <Sidebar />
+
+          {/* 右侧主内容区域 */}
+          <main className="flex-1 ml-60 overflow-y-auto">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
