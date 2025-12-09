@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/components/AuthProvider';
 
-export default function AdminLoginPage() {
+export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,40 +18,30 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+    const result = await login(username, password);
 
-      const data = await res.json();
-
-      if (res.ok) {
-        router.push('/admin');
-        router.refresh();
-      } else {
-        setError(data.error || '登录失败');
-      }
-    } catch {
-      setError('网络错误，请重试');
-    } finally {
-      setLoading(false);
+    if (result.success) {
+      router.push('/');
+      router.refresh();
+    } else {
+      setError(result.error || '登录失败');
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-400 to-fuchsia-400 flex items-center justify-center shadow-lg mx-auto mb-4">
-            <span className="text-white font-bold text-3xl">N</span>
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-400 to-fuchsia-400 flex items-center justify-center shadow-sm mx-auto mb-4">
+            <span className="text-white font-bold text-2xl">N</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">管理后台</h1>
-          <p className="text-gray-600 mt-2">登录以管理你的平台</p>
+          <h1 className="text-3xl font-bold text-gray-900">欢迎回来</h1>
+          <p className="text-gray-600 mt-2">登录你的 Nekoko 账号</p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="p-3 text-sm text-red-600 bg-red-50 rounded-xl">
@@ -88,21 +80,20 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 transition-all shadow-sm"
+              className="w-full py-3 px-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 transition-all"
             >
               {loading ? '登录中...' : '登录'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-500">
-            默认账号: admin / admin123
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              还没有账号？{' '}
+              <Link href="/register" className="text-violet-600 hover:text-violet-700 font-medium">
+                立即注册
+              </Link>
+            </p>
           </div>
-        </div>
-
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-violet-600 hover:text-violet-700 font-medium">
-            ← 返回首页
-          </Link>
         </div>
       </div>
     </div>

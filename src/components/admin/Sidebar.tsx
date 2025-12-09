@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -11,26 +10,28 @@ import {
   FileText,
   Settings,
   LogOut,
-  Menu,
-  X,
   Server,
 } from 'lucide-react';
-import clsx from 'clsx';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const menuItems = [
   { href: '/admin', label: '仪表盘', icon: LayoutDashboard },
-  { href: '/admin/providers', label: '服务商管理', icon: Server },
-  { href: '/admin/models', label: '模型管理', icon: Box },
-  { href: '/admin/users', label: '用户管理', icon: Users },
+  { href: '/admin/providers', label: '服务商', icon: Server },
+  { href: '/admin/models', label: '模型', icon: Box },
+  { href: '/admin/users', label: '用户', icon: Users },
   { href: '/admin/apikeys', label: 'API Key', icon: Key },
-  { href: '/admin/logs', label: '调用日志', icon: FileText },
-  { href: '/admin/settings', label: '系统设置', icon: Settings },
+  { href: '/admin/logs', label: '日志', icon: FileText },
+  { href: '/admin/settings', label: '设置', icon: Settings },
 ];
 
-export default function AdminSidebar({ username }: { username: string }) {
+interface AdminSidebarProps {
+  username: string;
+}
+
+export default function AdminSidebar({ username }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -38,85 +39,77 @@ export default function AdminSidebar({ username }: { username: string }) {
     router.refresh();
   };
 
-  const SidebarContent = () => (
-    <>
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-          Nekoko Admin
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          欢迎, {username}
-        </p>
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-60 bg-slate-50 border-r border-gray-100 flex flex-col">
+      {/* 顶部 - 品牌Logo */}
+      <div className="p-6 pb-8">
+        <Link href="/admin" className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-400 to-fuchsia-400 flex items-center justify-center shadow-sm">
+            <span className="text-white font-bold text-lg">N</span>
+          </div>
+          <span className="font-bold text-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
+            Admin
+          </span>
+        </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      {/* 中部 - 主导航链接 */}
+      <nav className="flex-1 px-4 space-y-1">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href ||
+            (item.href !== '/admin' && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={clsx(
-                'flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors',
+              className={cn(
+                'flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200',
                 isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               )}
             >
               <Icon size={20} />
-              <span>{item.label}</span>
+              <span className="font-medium">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      {/* 底部区域 */}
+      <div className="px-4 pb-6 space-y-4">
+        {/* 分隔线 */}
+        <div className="border-t border-gray-200" />
+
+        {/* 返回前台 */}
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+        >
+          返回前台
+        </Link>
+
+        {/* 用户资料 */}
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-400 flex items-center justify-center">
+            <span className="text-white font-bold">{username[0].toUpperCase()}</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-900 truncate">{username}</p>
+            <p className="text-xs text-gray-500">管理员</p>
+          </div>
+        </div>
+
+        {/* 退出登录 */}
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg
-                   text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
         >
-          <LogOut size={20} />
-          <span>退出登录</span>
+          <LogOut size={18} />
+          退出登录
         </button>
       </div>
-    </>
-  );
-
-  return (
-    <>
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md"
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile sidebar */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/50"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-      <aside
-        className={clsx(
-          'lg:hidden fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 flex flex-col transition-transform',
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        )}
-      >
-        <SidebarContent />
-      </aside>
-
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 flex-col border-r border-gray-200 dark:border-gray-700">
-        <SidebarContent />
-      </aside>
-    </>
+    </aside>
   );
 }
